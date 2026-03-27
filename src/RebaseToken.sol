@@ -43,7 +43,7 @@ contract RebaseToken is ERC20 {
     uint256 private s_interestRate = 5e10;
     address private immutable s_owner;
 
-    constructor() ERC20("Rebase Token", "RBT") {}
+    event InterestRateUpdated(uint256 newInterestRate);
 
     modifier onlyOwner() {
         if (msg.sender != s_owner) {
@@ -52,10 +52,16 @@ contract RebaseToken is ERC20 {
         _;
     }
 
+    constructor() ERC20("Rebase Token", "RBT") {
+        s_owner = msg.sender;
+    }
+
+
     function setInterestRate(uint256 _newInterestRate) external onlyOwner {
         if (_newInterestRate > s_interestRate) {
             revert RebaseToken__InvalidInterestRate();
         }
         s_interestRate = _newInterestRate;
+        emit InterestRateUpdated(_newInterestRate);
     }
 }
