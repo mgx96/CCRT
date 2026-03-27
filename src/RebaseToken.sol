@@ -21,7 +21,6 @@
 // internal & private view & pure functions
 // external & public view & pure functions
 
-
 //SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.30;
@@ -44,17 +43,17 @@ contract RebaseToken is ERC20 {
     uint256 private s_interestRate = 5e10;
     address private immutable s_owner;
 
-    constructor() ERC20("Rebase Token", "RBT"){}
+    constructor() ERC20("Rebase Token", "RBT") {}
 
     modifier onlyOwner() {
-        if(msg.sender != s_owner) {
+        if (msg.sender != s_owner) {
             revert RebaseToken__NotOwner();
         }
         _;
     }
 
     function setInterestRate(uint256 _newInterestRate) external onlyOwner {
-        if(_newInterestRate > s_interestRate) {
+        if (_newInterestRate > s_interestRate) {
             revert RebaseToken__InvalidInterestRate();
         }
         s_interestRate = _newInterestRate;
