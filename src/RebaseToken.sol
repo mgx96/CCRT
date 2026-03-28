@@ -56,11 +56,26 @@ contract RebaseToken is ERC20 {
         s_owner = msg.sender;
     }
 
+    /**
+     * @dev sets the interest rate for the rebase token. Only the owner of the protocol can call this function.
+     * @param _newInterestRate The new interest rate to be set. It must be less than the current interest rate.
+     * @notice only allow the interest rate to decrease but we don't want it to revert in case it's the destination chain that is updating the interest rate (in which case it will be either the same or larger so it won't update)
+     */
+
+    /**
+     * @notice Set the interest rate in the contract.
+     * @param _newInterestRate The new interest rate to be set.
+     * @dev The interest rate can only decrease.
+     */
     function setInterestRate(uint256 _newInterestRate) external onlyOwner {
         if (_newInterestRate >= s_interestRate) {
             revert RebaseToken__InvalidInterestRate();
         }
         s_interestRate = _newInterestRate;
         emit InterestRateUpdated(_newInterestRate);
+    }
+
+    function mint(address _to, uint256 _amount) external onlyOwner {
+        _mint(_to, _amount);
     }
 }
