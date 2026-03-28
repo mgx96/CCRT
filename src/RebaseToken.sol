@@ -41,6 +41,7 @@ contract RebaseToken is ERC20 {
 
     uint256 private constant DECIMAL_PRECISION = 1e18;
     uint256 private s_interestRate = 5e10;
+    mapping(address => uint256) private s_userInterestRates;
     address private immutable s_owner;
 
     event InterestRateUpdated(uint256 newInterestRate);
@@ -77,5 +78,9 @@ contract RebaseToken is ERC20 {
 
     function mint(address _to, uint256 _amount) external onlyOwner {
         _mint(_to, _amount);
+    }
+
+    function getUserInterestRate(address _user) external view returns (uint256) {
+        return s_userInterestRates[_user];
     }
 }
