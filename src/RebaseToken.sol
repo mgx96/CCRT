@@ -80,6 +80,11 @@ contract RebaseToken is ERC20 {
         _mint(_to, _amount);
     }
 
+    /**
+     * @notice Get the interest rate for a specific user.
+     * @param _user The address of the user.
+     * @return The interest rate for the user.
+     */
     function getUserInterestRate(address _user) external view returns (uint256) {
         return s_userInterestRates[_user];
     }
