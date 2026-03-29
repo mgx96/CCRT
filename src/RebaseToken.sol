@@ -42,7 +42,7 @@ contract RebaseToken is ERC20 {
     uint256 private constant DECIMAL_PRECISION = 1e18;
     uint256 private s_interestRate = 5e10;
     mapping(address => uint256) private s_userInterestRate;
-    mapping(address => uint256) private s_userLastUpdatedTimeSamp;
+    mapping(address => uint256) private s_userLastUpdatedTimeStamp;
     address private immutable s_owner;
 
     event InterestRateUpdated(uint256 newInterestRate);
@@ -88,8 +88,6 @@ contract RebaseToken is ERC20 {
         _mint(_to, _amount);
     }
 
-    function _calculateUserAccruedInterestSinceLastUpdate(address _user) internal view returns (uint256) {}
-
     /**
      * @notice Get the balance of a user including the accrued interest since the last update.
      * @param _user The address of the user.
@@ -98,15 +96,44 @@ contract RebaseToken is ERC20 {
     function balanceOf(address _user) public view override returns (uint256) {
         // get the principle balance of the user -> balance from ERC20.
         // multiply the principle balance by the interest that has accumulated since the last time the balance was updated.
-        return super.balanceOf(_user) * _calculateUserAccruedInterestSinceLastUpdate(_user);
+        return super.balanceOf(_user) * _calculateUserAccruedInterestSinceLastUpdate(_user) / DECIMAL_PRECISION;
     }
 
+    /**
+     * @notice Calculate the accrued interest for a user since the last update.
+     * @param _user The address of the user.
+     * @return linearInterest accrued interest for the user since the last update.
+     */
+
+    function _calculateUserAccruedInterestSinceLastUpdate(address _user)
+        internal
+        view
+        returns (uint256 linearInterest)
+    {
+        // we need to calculate the interest that has accumulated since the last update.
+        // this is going to be linear growth over time.
+        // 1. calculate the time since the last update.
+        // 2. calculate the amount of linear growth.
+        // principle balance + (prinicible balance * interest rate * time elapsed).
+        // deposit: 100 tokens
+        // interest rate 0.5 tokens per second.
+        // time elapsed: 30 seconds.
+        // 100 + (100 * 0.5 * 30)
+        uint256 timeLapsed = block.timestamp - s_userLastUpdatedTimeStamp[_user];
+        linearInterest = DECIMAL_PRECISION + (s_userInterestRate[_user] * timeLapsed);
+    }
+
+    /**
+     * @notice Mint the accrued interest to the user.
+     * @param _to The address of the user to mint the accrued interest to.
+     * @dev This function should be called before any transfer or burn of the user's tokens to ensure that the user's balance is up to date with the accrued interest.
+     */
     function _mintAccruedInterest(address _to) internal {
         // find the current balance of rebase tokens that have been minted to the user -> principle balance.
         // calculate their current balance including any interest -> balanceOf.
         // calculate the number of tokens that needs to be minted to the user.
         // call the _mint function to mint the tokens to the user.
-        // set the user's last updated timestmp.
+        // set the user's last updated timestamp.
     }
 
     /**
