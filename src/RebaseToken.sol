@@ -30,18 +30,19 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 /*
 * @title RebaseToken
 * @author Malek Sharabi
-* @notice This is going to be a cross-chain rebase tokens that incentivizes users to deposit into a vault.
+* @notice This is going to be a cross-chain rebase token that incentivizes users to deposit into a vault.
 * @notice The interest rate in the smart contract can only decrease.
-* @notice Each user will have their own interest rates that is the global interest rate at the time of depositing.
+* @notice Each users will have their own interest rates that is the global interest rate at the time of depositing.
 */
 
 contract RebaseToken is ERC20 {
     error RebaseToken__NotOwner();
-    error RebaseToken__InvalidInterestRate();
+    error RebaseToken__InterestRateCanOnlyDecrease(uint256 currentInterestRate, uint256 proposedInterestRate);
 
     uint256 private constant DECIMAL_PRECISION = 1e18;
     uint256 private s_interestRate = 5e10;
-    mapping(address => uint256) private s_userInterestRates;
+    mapping(address => uint256) private s_userInterestRate;
+    mapping(address => uint256) private s_userLastUpdatedTimeSamp;
     address private immutable s_owner;
 
     event InterestRateUpdated(uint256 newInterestRate);
@@ -70,14 +71,28 @@ contract RebaseToken is ERC20 {
      */
     function setInterestRate(uint256 _newInterestRate) external onlyOwner {
         if (_newInterestRate >= s_interestRate) {
-            revert RebaseToken__InvalidInterestRate();
+            revert RebaseToken__InterestRateCanOnlyDecrease(s_interestRate, _newInterestRate);
         }
         s_interestRate = _newInterestRate;
         emit InterestRateUpdated(_newInterestRate);
     }
 
     function mint(address _to, uint256 _amount) external onlyOwner {
+        s_userInterestRate[_to] = s_interestRate;
         _mint(_to, _amount);
+    }
+
+    function balanceOf(address _user) public view override returns (uint256) {
+        // get the principle balance of the user -> balance from ERC20.
+        // multiply the principle balance by the interest that has accumulated since the last time the balance was updated.
+    }
+
+    function _mintAccruedInterest(address _to) internal {
+        // find the current balance of rebase tokens that have been minted to the user -> principle balance.
+        // calculate their current balance including any interest -> balanceOf.
+        // calculate the number of tokens that needs to be minted to the user.
+        // call the _mint function to mint the tokens to the user.
+        // set the user's last updated timestmp.
     }
 
     /**
@@ -86,6 +101,6 @@ contract RebaseToken is ERC20 {
      * @return The interest rate for the user.
      */
     function getUserInterestRate(address _user) external view returns (uint256) {
-        return s_userInterestRates[_user];
+        return s_userInterestRate[_user];
     }
 }
