@@ -84,6 +84,7 @@ contract RebaseToken is ERC20 {
      * @dev When minting new tokens, we need to set the user's interest rate to the current global interest rate and set their last updated timestamp to the current block timestamp.
      */
     function mint(address _to, uint256 _amount) external onlyOwner {
+        _mintAccruedInterest(_to);
         s_userInterestRate[_to] = s_interestRate;
         _mint(_to, _amount);
     }
@@ -125,15 +126,20 @@ contract RebaseToken is ERC20 {
 
     /**
      * @notice Mint the accrued interest to the user.
-     * @param _to The address of the user to mint the accrued interest to.
+     * @param _user The address of the user to mint the accrued interest to.
      * @dev This function should be called before any transfer or burn of the user's tokens to ensure that the user's balance is up to date with the accrued interest.
      */
-    function _mintAccruedInterest(address _to) internal {
+    function _mintAccruedInterest(address _user) internal {
         // find the current balance of rebase tokens that have been minted to the user -> principle balance.
+        uint256 principleBalance = super.balanceOf(_user);
         // calculate their current balance including any interest -> balanceOf.
+        uint256 currentBalance = balanceOf(_user);
         // calculate the number of tokens that needs to be minted to the user.
-        // call the _mint function to mint the tokens to the user.
+        uint256 balanceIncrease = currentBalance - principleBalance;
         // set the user's last updated timestamp.
+        s_userLastUpdatedTimeStamp[_user] = block.timestamp;
+        // call the _mint function to mint the tokens to the user.
+        _mint(_user, balanceIncrease);
     }
 
     /**
