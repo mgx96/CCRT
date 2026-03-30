@@ -85,6 +85,9 @@ contract RebaseToken is ERC20 {
      */
     function mint(address _to, uint256 _amount) external onlyOwner {
         _mintAccruedInterest(_to);
+        // we set the user's individual interest rate to the current global interest rate if they deposit later.
+        // this is intended by design to prevent users from depositing small amounts to get a high interest rate.
+        // we want to incentivize users to deposit as much as possible as early as possible.
         s_userInterestRate[_to] = s_interestRate;
         _mint(_to, _amount);
     }
