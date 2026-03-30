@@ -199,6 +199,15 @@ contract RebaseToken is ERC20 {
     }
 
     /**
+     * @notice Get the current global interest rate.
+     * @return The current global interest rate.
+     */
+
+    function getInterestRate() external view returns (uint256) {
+        return s_interestRate;
+    }
+
+    /**
      * @notice Get the interest rate for a specific user.
      * @param _user The address of the user.
      * @return The interest rate for the user.
