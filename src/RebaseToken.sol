@@ -92,7 +92,16 @@ contract RebaseToken is ERC20 {
         _mint(_to, _amount);
     }
 
+    /**
+     * @notice Burn the user tokens when they withdraw from the vault.
+     * @param _from The address of the user to burn the tokens from.
+     * @param _amount The amount of tokens to be burned.
+     */
+
     function burn(address _from, uint256 _amount) external onlyOwner {
+        if(_amount == type(uint256).max) {
+            _amount = balanceOf(_from);
+        }
         _mintAccruedInterest(_from);
         _burn(_from, _amount);
     }
@@ -106,6 +115,18 @@ contract RebaseToken is ERC20 {
         // get the principle balance of the user -> balance from ERC20.
         // multiply the principle balance by the interest that has accumulated since the last time the balance was updated.
         return super.balanceOf(_user) * _calculateUserAccruedInterestSinceLastUpdate(_user) / DECIMAL_PRECISION;
+    }
+
+    function transfer(address _recipient, uint256 _amount) public override returns (bool) {
+        _mintAccruedInterest(msg.sender);
+        _mintAccruedInterest(_recipient);
+        if(_amount == type(uint256).max) {
+            _amount = balanceOf(msg.sender);
+        }
+        if(balanceOf(_recipient) == 0) {
+            s_userInterestRate[_recipient] = s_userInterestRate[msg.sender];
+        }
+        return super.transfer (_recipient, _amount);
     }
 
     /**
