@@ -92,6 +92,11 @@ contract RebaseToken is ERC20 {
         _mint(_to, _amount);
     }
 
+    function burn(address _from, uint256 _amount) external onlyOwner {
+        _mintAccruedInterest(_from);
+        _burn(_from, _amount);
+    }
+
     /**
      * @notice Get the balance of a user including the accrued interest since the last update.
      * @param _user The address of the user.
