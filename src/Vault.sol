@@ -41,10 +41,21 @@ contract Vault {
 
     receive() external payable {}
 
+    /**
+     * @dev allows users to deposit ETH into the vault and mint rebase tokens in return.
+     * @notice the amount of rebase tokens minted is equal to the amount of ETH deposited.
+     * @notice the user will have their own interest rate that is the global interest rate at the time of depositing.
+     */
+
     function deposit() external payable {
         i_rebaseToken.mint(msg.sender, msg.value);
         emit Deposit(msg.sender, msg.value);
     }
+
+    /**
+     * @dev allows users to redeem their rebase tokens for ETH. The user must have enough rebase tokens to redeem.
+     * @notice the amount of ETH redeemed is equal to the amount of rebase tokens burned.
+     */
 
     function redeem(uint256 _amount) external {
         i_rebaseToken.burn(msg.sender, _amount);
