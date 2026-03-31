@@ -25,18 +25,25 @@
 
 pragma solidity ^0.8.30;
 
-contract Vault {
-    address private immutable i_rebaseToken;
+import {IRebaseToken} from "./interfaces/IRebaseToken.sol";
 
-    constructor(address _rebaseToken) {
+contract Vault {
+    IRebaseToken private immutable i_rebaseToken;
+
+    event Deposit(address indexed user, uint256 amount);
+
+    constructor(IRebaseToken _rebaseToken) {
         i_rebaseToken = _rebaseToken;
     }
 
     receive() external payable {}
 
-    function deposit() external payable {}
+    function deposit() external payable {
+        i_rebaseToken.mint(msg.sender, msg.value);
+        emit Deposit(msg.sender, msg.value);
+    }
 
     function getRebaseTokenAddress() external view returns (address) {
-        return i_rebaseToken;
+        return address(i_rebaseToken);
     }
 }
