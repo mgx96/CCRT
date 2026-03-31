@@ -83,7 +83,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @param _amount The amount of tokens to be minted.
      * @dev When minting new tokens, we need to set the user's interest rate to the current global interest rate and set their last updated timestamp to the current block timestamp.
      */
-    function mint(address _to, uint256 _amount) external onlyOwner {
+    function mint(address _to, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE) {
         _mintAccruedInterest(_to);
         // we set the user's individual interest rate to the current global interest rate if they deposit later.
         // this is intended by design to prevent users from depositing small amounts to get a high interest rate.
@@ -98,7 +98,7 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @param _amount The amount of tokens to be burned.
      */
 
-    function burn(address _from, uint256 _amount) external onlyOwner {
+    function burn(address _from, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE) {
         if (_amount == type(uint256).max) {
             _amount = balanceOf(_from);
         }
