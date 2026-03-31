@@ -51,4 +51,22 @@ contract RebaseTokenTest is Test {
 
         vm.stopPrank();
     }
+
+    function testRedeemStraightAway(uint256 amount) public {
+        amount = bound(amount, 1e5, type(uint96).max);
+
+        vm.startPrank(user);
+        vm.deal(user, amount);
+        vault.deposit{value: amount}();
+        uint256 startBalance = rebaseToken.balanceOf(user);
+        console.log("Start Balance: ", startBalance);
+        assertEq(startBalance, amount);
+
+        vault.redeem(amount);
+        uint256 endBalance = rebaseToken.balanceOf(user);
+        console.log("End Balance: ", endBalance);
+        assertEq(endBalance, 0);
+
+        vm.stopPrank();
+    }
 }
