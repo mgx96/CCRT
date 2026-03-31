@@ -26,6 +26,7 @@
 pragma solidity ^0.8.30;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 /*
 * @title RebaseToken
@@ -35,7 +36,7 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 * @notice Each users will have their own interest rates that is the global interest rate at the time of depositing.
 */
 
-contract RebaseToken is ERC20 {
+contract RebaseToken is ERC20, Ownable {
     error RebaseToken__NotOwner();
     error RebaseToken__InterestRateCanOnlyDecrease(uint256 currentInterestRate, uint256 proposedInterestRate);
 
@@ -47,14 +48,7 @@ contract RebaseToken is ERC20 {
 
     event InterestRateUpdated(uint256 newInterestRate);
 
-    modifier onlyOwner() {
-        if (msg.sender != s_owner) {
-            revert RebaseToken__NotOwner();
-        }
-        _;
-    }
-
-    constructor() ERC20("Rebase Token", "RBT") {
+    constructor() ERC20("Rebase Token", "RBT") Ownable(msg.sender) {
         s_owner = msg.sender;
     }
 
