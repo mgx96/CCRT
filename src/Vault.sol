@@ -31,4 +31,12 @@ contract Vault {
     constructor(address _rebaseToken) {
         i_rebaseToken = _rebaseToken;
     }
+
+    receive() external payable {}
+
+    function deposit() external payable {}
+
+    function getRebaseTokenAddress() external view returns (address) {
+        return i_rebaseToken;
+    }
 }
