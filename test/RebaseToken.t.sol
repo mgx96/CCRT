@@ -97,4 +97,13 @@ contract RebaseTokenTest is Test {
         assertEq(ethBalance, balanceAfterSomeTime);
         assertGt(ethBalance, depositAmount);
     }
+
+    function testTransfer(uint256 amount, uint256 amountToSend) public {
+        amount = bound(amount, 1e5 + 1e5, type(uint96).max);
+        amountToSend = bound(amountToSend, 1e5, amount - 1e5);
+
+        vm.deal(user, amount);
+        vm.prank(user);
+        vault.deposit{value: amount}();
+    }
 }
