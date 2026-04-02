@@ -105,5 +105,13 @@ contract RebaseTokenTest is Test {
         vm.deal(user, amount);
         vm.prank(user);
         vault.deposit{value: amount}();
+
+        address user2 = makeAddr("user2");
+        vm.prank(user);
+        rebaseToken.transfer(user2, amountToSend);
+
+        uint256 user2Balance = rebaseToken.balanceOf(user2);
+        assertEq(user2Balance, amountToSend);
+        assertEq(rebaseToken.balanceOf(user), amount - amountToSend);
     }
 }
