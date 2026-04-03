@@ -114,4 +114,34 @@ contract RebaseTokenTest is Test {
         assertEq(user2Balance, amountToSend);
         assertEq(rebaseToken.balanceOf(user), amount - amountToSend);
     }
+
+    function testTransferFrom(uint256 amount, uint256 amountToSend) public {
+        amount = bound(amount, 1e5 + 1e5, type(uint96).max);
+        amountToSend = bound(amountToSend, 1e5, amount - 1e5);
+
+        vm.deal(user, amount);
+        vm.prank(user);
+        vault.deposit{value: amount}();
+
+        address user2 = makeAddr("user2");
+        vm.prank(user);
+        rebaseToken.approve(user2, amountToSend);
+
+        vm.prank(user2);
+        rebaseToken.transferFrom(user, user2, amountToSend);
+
+        assertEq(rebaseToken.balanceOf(user2), amountToSend);
+        assertEq(rebaseToken.balanceOf(user), amount - amountToSend);
+    }
+
+    function testSetInterestRate(uint256 newInterestRate) public {
+        newInterestRate = bound(newInterestRate, 0, rebaseToken.getInterestRate() - 1);
+
+        vm.prank(owner);
+        rebaseToken.setInterestRate(newInterestRate);
+
+        uint256 currentInterestRate = rebaseToken.getInterestRate();
+        console.log("Current Interest Rate: ", currentInterestRate);
+        assertEq(currentInterestRate, newInterestRate);
+    }
 }
