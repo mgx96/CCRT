@@ -144,4 +144,16 @@ contract RebaseTokenTest is Test {
         console.log("Current Interest Rate: ", currentInterestRate);
         assertEq(currentInterestRate, newInterestRate);
     }
+
+    function testGetUserInterestRate(address userAddress) public {
+        userAddress = makeAddr("userAddress");
+        vm.deal(userAddress, 1e18);
+        vm.prank(userAddress);
+        vault.deposit{value: 1e18}();
+        uint256 userInterestRate = rebaseToken.getUserInterestRate(userAddress);
+        uint256 globalInterestRate = rebaseToken.getInterestRate();
+        console.log("User Interest Rate: ", userInterestRate);
+        console.log("Global Interest Rate: ", globalInterestRate);
+        assertEq(userInterestRate, globalInterestRate);
+    }
 }
