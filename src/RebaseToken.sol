@@ -215,4 +215,8 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
     function getUserInterestRate(address _user) external view returns (uint256) {
         return s_userInterestRate[_user];
     }
+
+    function getPrincipleAmount(address _user) external view returns (uint256) {
+        return super.balanceOf(_user);
+    }
 }

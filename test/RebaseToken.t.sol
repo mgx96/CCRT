@@ -172,4 +172,23 @@ contract RebaseTokenTest is Test {
         vm.expectRevert();
         rebaseToken.burn(user, 1e18);
     }
+
+    function testCannotSetHigherInterestRate(uint256 newInterestRate) public {
+        newInterestRate = bound(newInterestRate, rebaseToken.getInterestRate() + 1, type(uint96).max);
+        vm.prank(owner);
+        vm.expectRevert();
+        rebaseToken.setInterestRate(newInterestRate);
+    }
+
+    function testGetPrincipleAmount(uint256 amount) public {
+        amount = bound(amount, 1e5, type(uint96).max);
+
+        vm.deal(user, amount);
+        vm.prank(user);
+        vault.deposit{value: amount}();
+        assertEq(rebaseToken.getPrincipleAmount(user), amount);
+
+        vm.warp(block.timestamp + 30 days);
+        assertEq(rebaseToken.getPrincipleAmount(user), amount);
+    }
 }
