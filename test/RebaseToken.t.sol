@@ -156,4 +156,20 @@ contract RebaseTokenTest is Test {
         console.log("Global Interest Rate: ", globalInterestRate);
         assertEq(userInterestRate, globalInterestRate);
     }
+
+    function testCannotSetInterestRateIfNotOwner(uint256 newInterestRate) public {
+        vm.prank(user);
+        vm.expectRevert();
+        rebaseToken.setInterestRate(newInterestRate);
+    }
+
+    function testCannotCallMintAndBurn() public {
+        vm.prank(user);
+        vm.expectRevert();
+        rebaseToken.mint(user, 1e18);
+
+        vm.prank(user);
+        vm.expectRevert();
+        rebaseToken.burn(user, 1e18);
+    }
 }
