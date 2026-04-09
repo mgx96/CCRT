@@ -196,4 +196,14 @@ contract RebaseTokenTest is Test {
         address tokenAddress = vault.getRebaseTokenAddress();
         assertEq(tokenAddress, address(rebaseToken));
     }
+
+    function testCannotRedeemMoreThanBalance() public {
+        vm.deal(user, 1e18);
+        vm.prank(user);
+        vault.deposit{value: 1e18}();
+
+        vm.prank(user);
+        vm.expectRevert();
+        vault.redeem(2e18);
+    }
 }
