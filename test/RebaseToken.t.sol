@@ -206,4 +206,15 @@ contract RebaseTokenTest is Test {
         vm.expectRevert();
         vault.redeem(2e18);
     }
+
+    function testCanRedeemMax() public {
+        vm.deal(user, 1e18);
+        vm.prank(user);
+        vault.deposit{value: 1e18}();
+
+        vm.prank(user);
+        vault.redeem(type(uint256).max);
+
+        assertEq(address(user).balance, 1e18);
+    }
 }
