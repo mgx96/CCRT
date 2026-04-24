@@ -81,14 +81,15 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @notice Mint the user tokens when they deposit into the vault.
      * @param _to The address of the user to mint the tokens to.
      * @param _amount The amount of tokens to be minted.
+     * @param _userInterestRate The interest rate for the user.
      * @dev When minting new tokens, we need to set the user's interest rate to the current global interest rate and set their last updated timestamp to the current block timestamp.
      */
-    function mint(address _to, uint256 _amount) external onlyRole(MINT_AND_BURN_ROLE) {
+    function mint(address _to, uint256 _amount, uint256 _userInterestRate) external onlyRole(MINT_AND_BURN_ROLE) {
         _mintAccruedInterest(_to);
         // we set the user's individual interest rate to the current global interest rate if they deposit later.
         // this is intended by design to prevent users from depositing small amounts to get a high interest rate.
         // we want to incentivize users to deposit as much as possible as early as possible.
-        s_userInterestRate[_to] = s_interestRate;
+        s_userInterestRate[_to] = _userInterestRate;
         _mint(_to, _amount);
     }
 
