@@ -33,8 +33,7 @@ contract RebaseTokenPool is TokenPool {
         returns (Pool.ReleaseOrMintOutV1 memory)
     {
         uint256 localAmount = _calculateLocalAmount(
-            releaseOrMintIn.sourceDenominatedAmount,
-            _parseRemoteDecimals(releaseOrMintIn.sourcePoolData)
+            releaseOrMintIn.sourceDenominatedAmount, _parseRemoteDecimals(releaseOrMintIn.sourcePoolData)
         );
         _validateReleaseOrMint(releaseOrMintIn, localAmount);
         uint256 userInterestRate = abi.decode(releaseOrMintIn.sourcePoolData, (uint256));
