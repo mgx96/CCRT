@@ -8,8 +8,8 @@ import {IERC20} from "@openzeppelin/contracts@4.8.3/token/ERC20/IERC20.sol";
 import {IRebaseToken} from "./interfaces/IRebaseToken.sol";
 
 contract RebaseTokenPool is TokenPool {
-    constructor(IERC20 _token, address _rnmProxy, address _router)
-        TokenPool(_token, 18, new address[](0), _rnmProxy, _router)
+    constructor(IERC20 _token, address _rmnProxy, address _router)
+        TokenPool(_token, 18, new address[](0), _rmnProxy, _router)
     {}
 
     function lockOrBurn(Pool.LockOrBurnInV1 calldata lockOrBurnIn)
