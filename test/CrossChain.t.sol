@@ -12,7 +12,9 @@ import {CCIPLocalSimulatorFork, Register} from "../lib/chainlink-local/src/ccip/
 import {IERC20} from "@openzeppelin/contracts@4.8.3/token/ERC20/IERC20.sol";
 import {TokenPool} from "../lib/chainlink-local/lib/chainlink-ccip/chains/evm/contracts/pools/TokenPool.sol";
 import {RateLimiter} from "../lib/chainlink-local/lib/chainlink-ccip/chains/evm/contracts/libraries/RateLimiter.sol";
-import {IRouterClient} from "../lib/chainlink-local/lib/chainlink-ccip/chains/evm/contracts/interfaces/IRouterClient.sol";
+import {
+    IRouterClient
+} from "../lib/chainlink-local/lib/chainlink-ccip/chains/evm/contracts/interfaces/IRouterClient.sol";
 import {
     RegistryModuleOwnerCustom
 } from "../lib/chainlink-local/lib/chainlink-ccip/chains/evm/contracts/tokenAdminRegistry/RegistryModuleOwnerCustom.sol";
@@ -137,16 +139,17 @@ contract CrossChainTest is Test {
             data: "",
             tokenAmounts: _tokenAmounts,
             feeToken: localNetworkDetails.linkAddress,
-            extraArgs: Client._argsToBytes(Client.EVMExtraArgsV1({gasLimit: 0})) 
+            extraArgs: Client._argsToBytes(Client.EVMExtraArgsV1({gasLimit: 0}))
         });
-        uint256 fee =IRouterClient(localNetworkDetails.routerAddress).getFee(remoteNetworkDetails.chainSelector, message);
+        uint256 fee =
+            IRouterClient(localNetworkDetails.routerAddress).getFee(remoteNetworkDetails.chainSelector, message);
         ccipLocalSimulatorFork.requestLinkFromFaucet(user, fee);
         vm.prank(user);
         IERC20(localNetworkDetails.linkAddress).approve(localNetworkDetails.routerAddress, fee);
         vm.prank(user);
         //casting localToken to an address because I'm using two different IERC20 versions, one from an older OpenZeppelin contracts and one from a newer version.
         IERC20(address(localToken)).approve(localNetworkDetails.routerAddress, amountToBridge);
-        uint256 localBalanceBefore =localToken.balanceOf(user);
+        uint256 localBalanceBefore = localToken.balanceOf(user);
         vm.prank(user);
         IRouterClient(localNetworkDetails.routerAddress).ccipSend(remoteNetworkDetails.chainSelector, message);
         uint256 localBalanceAfter = localToken.balanceOf(user);
