@@ -1,0 +1,148 @@
+No files changed, compilation skipped
+
+Ran 1 test for test/CrossChain.t.sol:CrossChainTest
+[FAIL: EvmError: Revert] testBridgeAllTokens() (gas: 21792)
+Logs:
+  sepolia chainSelector: 16015286601757825753
+  arbSepolia chainSelector: 3478487238524512106
+  sepolia router: 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59
+
+Traces:
+  [22297601] CrossChainTest::setUp()
+    ├─ [7662554] → new CCIPLocalSimulatorFork@0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
+    │   ├─ [0] VM::recordLogs()
+    │   │   └─ ← [Return]
+    │   ├─ [3183812] → new Register@0x104fBc016F4bb334D775a19E8A6510109AC63E00
+    │   │   └─ ← [Return] 2175 bytes of code
+    │   ├─ [0] VM::makePersistent(Register: [0x104fBc016F4bb334D775a19E8A6510109AC63E00])
+    │   │   └─ ← [Return]
+    │   └─ ← [Return] 21949 bytes of code
+    ├─ [0] VM::createSelectFork("sepolia")
+    │   └─ ← [Return] 0
+    ├─ [0] VM::createFork("arb-sepolia")
+    │   └─ ← [Return] 1
+    ├─ [0] VM::makePersistent(CCIPLocalSimulatorFork: [0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f])
+    │   └─ ← [Return]
+    ├─ [11089] CCIPLocalSimulatorFork::getNetworkDetails(11155111 [1.115e7]) [staticcall]
+    │   ├─ [6062] Register::getNetworkDetails(11155111 [1.115e7]) [staticcall]
+    │   │   └─ ← [Return] NetworkDetails({ chainSelector: 16015286601757825753 [1.601e19], routerAddress: 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59, linkAddress: 0x779877A7B0D9E8603169DdbD7836e478b4624789, wrappedNativeAddress: 0x097D90c9d3E0B50Ca60e1ae45F6A81010f9FB534, ccipBnMAddress: 0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05, ccipLnMAddress: 0x466D489b6d36E7E3b824ef491C225F5830E81cC1, rmnProxyAddress: 0xba3f6251de62dED61Ff98590cB2fDf6871FbB991, registryModuleOwnerCustomAddress: 0x62e731218d0D47305aba2BE3751E7EE9E5520790, tokenAdminRegistryAddress: 0x95F29FEE11c5C55d26cCcf1DB6772DE953B37B82 })
+    │   └─ ← [Return] NetworkDetails({ chainSelector: 16015286601757825753 [1.601e19], routerAddress: 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59, linkAddress: 0x779877A7B0D9E8603169DdbD7836e478b4624789, wrappedNativeAddress: 0x097D90c9d3E0B50Ca60e1ae45F6A81010f9FB534, ccipBnMAddress: 0xFd57b4ddBf88a4e07fF4e34C487b99af2Fe82a05, ccipLnMAddress: 0x466D489b6d36E7E3b824ef491C225F5830E81cC1, rmnProxyAddress: 0xba3f6251de62dED61Ff98590cB2fDf6871FbB991, registryModuleOwnerCustomAddress: 0x62e731218d0D47305aba2BE3751E7EE9E5520790, tokenAdminRegistryAddress: 0x95F29FEE11c5C55d26cCcf1DB6772DE953B37B82 })
+    ├─ [0] VM::startPrank(owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Return]
+    ├─ [1656801] → new RebaseToken@0xe8BbeB238E67Db9E8Affc049644fBB3b5e2a220f
+    │   ├─ emit OwnershipTransferred(previousOwner: 0x0000000000000000000000000000000000000000, newOwner: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Return] 7806 bytes of code
+    ├─ [392498] → new Vault@0x5660Ad51383D6d94940c5FfC3dD95C5AEaCAE3D4
+    │   └─ ← [Return] 1957 bytes of code
+    ├─ [4581498] → new RebaseTokenPool@0x12146B3c4a1C52F82E886a784818a251B09dCF9E
+    │   ├─ [714] RebaseToken::decimals() [staticcall]
+    │   │   └─ ← [Return] 18
+    │   └─ ← [Return] 22622 bytes of code
+    ├─ [27584] RebaseToken::grantMintAndBurnRole(Vault: [0x5660Ad51383D6d94940c5FfC3dD95C5AEaCAE3D4])
+    │   ├─ emit RoleGranted(role: 0x7429555b03aa5cf08cc5fc0890c97db295c9cec5e6bb1544bcd7fd1430dae3e2, account: Vault: [0x5660Ad51383D6d94940c5FfC3dD95C5AEaCAE3D4], sender: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Return]
+    ├─ [27584] RebaseToken::grantMintAndBurnRole(RebaseTokenPool: [0x12146B3c4a1C52F82E886a784818a251B09dCF9E])
+    │   ├─ emit RoleGranted(role: 0x7429555b03aa5cf08cc5fc0890c97db295c9cec5e6bb1544bcd7fd1430dae3e2, account: RebaseTokenPool: [0x12146B3c4a1C52F82E886a784818a251B09dCF9E], sender: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Return]
+    ├─ [84954] 0x62e731218d0D47305aba2BE3751E7EE9E5520790::registerAdminViaOwner(RebaseToken: [0xe8BbeB238E67Db9E8Affc049644fBB3b5e2a220f])
+    │   ├─ [1052] RebaseToken::owner() [staticcall]
+    │   │   └─ ← [Return] owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266]
+    │   ├─ [78736] 0x95F29FEE11c5C55d26cCcf1DB6772DE953B37B82::proposeAdministrator(RebaseToken: [0xe8BbeB238E67Db9E8Affc049644fBB3b5e2a220f], owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   │   ├─ emit AdministratorTransferRequested(token: RebaseToken: [0xe8BbeB238E67Db9E8Affc049644fBB3b5e2a220f], currentAdmin: 0x0000000000000000000000000000000000000000, newAdmin: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   │   └─ ← [Stop]
+    │   ├─ emit AdministratorRegistered(token: RebaseToken: [0xe8BbeB238E67Db9E8Affc049644fBB3b5e2a220f], administrator: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Stop]
+    ├─ [22441] 0x95F29FEE11c5C55d26cCcf1DB6772DE953B37B82::acceptAdminRole(RebaseToken: [0xe8BbeB238E67Db9E8Affc049644fBB3b5e2a220f])
+    │   ├─ emit AdministratorTransferred(token: RebaseToken: [0xe8BbeB238E67Db9E8Affc049644fBB3b5e2a220f], newAdmin: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Stop]
+    ├─ [26273] 0x95F29FEE11c5C55d26cCcf1DB6772DE953B37B82::setPool(RebaseToken: [0xe8BbeB238E67Db9E8Affc049644fBB3b5e2a220f], RebaseTokenPool: [0x12146B3c4a1C52F82E886a784818a251B09dCF9E])
+    │   ├─ [1002] RebaseTokenPool::isSupportedToken(RebaseToken: [0xe8BbeB238E67Db9E8Affc049644fBB3b5e2a220f]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit PoolSet(token: RebaseToken: [0xe8BbeB238E67Db9E8Affc049644fBB3b5e2a220f], previousPool: 0x0000000000000000000000000000000000000000, newPool: RebaseTokenPool: [0x12146B3c4a1C52F82E886a784818a251B09dCF9E])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::selectFork(1)
+    │   └─ ← [Return]
+    ├─ [11089] CCIPLocalSimulatorFork::getNetworkDetails(421614 [4.216e5]) [staticcall]
+    │   ├─ [6062] Register::getNetworkDetails(421614 [4.216e5]) [staticcall]
+    │   │   └─ ← [Return] NetworkDetails({ chainSelector: 3478487238524512106 [3.478e18], routerAddress: 0x2a9C5afB0d0e4BAb2BCdaE109EC4b0c4Be15a165, linkAddress: 0xb1D4538B4571d411F07960EF2838Ce337FE1E80E, wrappedNativeAddress: 0xE591bf0A0CF924A0674d7792db046B23CEbF5f34, ccipBnMAddress: 0xA8C0c11bf64AF62CDCA6f93D3769B88BdD7cb93D, ccipLnMAddress: 0x139E99f0ab4084E14e6bb7DacA289a91a2d92927, rmnProxyAddress: 0x9527E2d01A3064ef6b50c1Da1C0cC523803BCFF2, registryModuleOwnerCustomAddress: 0xE625f0b8b0Ac86946035a7729Aba124c8A64cf69, tokenAdminRegistryAddress: 0x8126bE56454B628a88C17849B9ED99dd5a11Bd2f })
+    │   └─ ← [Return] NetworkDetails({ chainSelector: 3478487238524512106 [3.478e18], routerAddress: 0x2a9C5afB0d0e4BAb2BCdaE109EC4b0c4Be15a165, linkAddress: 0xb1D4538B4571d411F07960EF2838Ce337FE1E80E, wrappedNativeAddress: 0xE591bf0A0CF924A0674d7792db046B23CEbF5f34, ccipBnMAddress: 0xA8C0c11bf64AF62CDCA6f93D3769B88BdD7cb93D, ccipLnMAddress: 0x139E99f0ab4084E14e6bb7DacA289a91a2d92927, rmnProxyAddress: 0x9527E2d01A3064ef6b50c1Da1C0cC523803BCFF2, registryModuleOwnerCustomAddress: 0xE625f0b8b0Ac86946035a7729Aba124c8A64cf69, tokenAdminRegistryAddress: 0x8126bE56454B628a88C17849B9ED99dd5a11Bd2f })
+    ├─ [0] VM::startPrank(owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Return]
+    ├─ [1656801] → new RebaseToken@0xCeF98e10D1e80378A9A74Ce074132B66CDD5e88d
+    │   ├─ emit OwnershipTransferred(previousOwner: 0x0000000000000000000000000000000000000000, newOwner: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Return] 7806 bytes of code
+    ├─ [4581498] → new RebaseTokenPool@0x72cC13426cAfD2375FFABE56498437927805d3d2
+    │   ├─ [714] RebaseToken::decimals() [staticcall]
+    │   │   └─ ← [Return] 18
+    │   └─ ← [Return] 22622 bytes of code
+    ├─ [27584] RebaseToken::grantMintAndBurnRole(RebaseTokenPool: [0x72cC13426cAfD2375FFABE56498437927805d3d2])
+    │   ├─ emit RoleGranted(role: 0x7429555b03aa5cf08cc5fc0890c97db295c9cec5e6bb1544bcd7fd1430dae3e2, account: RebaseTokenPool: [0x72cC13426cAfD2375FFABE56498437927805d3d2], sender: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Return]
+    ├─ [84954] 0xE625f0b8b0Ac86946035a7729Aba124c8A64cf69::registerAdminViaOwner(RebaseToken: [0xCeF98e10D1e80378A9A74Ce074132B66CDD5e88d])
+    │   ├─ [1052] RebaseToken::owner() [staticcall]
+    │   │   └─ ← [Return] owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266]
+    │   ├─ [78736] 0x8126bE56454B628a88C17849B9ED99dd5a11Bd2f::proposeAdministrator(RebaseToken: [0xCeF98e10D1e80378A9A74Ce074132B66CDD5e88d], owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   │   ├─ emit AdministratorTransferRequested(token: RebaseToken: [0xCeF98e10D1e80378A9A74Ce074132B66CDD5e88d], currentAdmin: 0x0000000000000000000000000000000000000000, newAdmin: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   │   └─ ← [Stop]
+    │   ├─ emit AdministratorRegistered(token: RebaseToken: [0xCeF98e10D1e80378A9A74Ce074132B66CDD5e88d], administrator: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Stop]
+    ├─ [22441] 0x8126bE56454B628a88C17849B9ED99dd5a11Bd2f::acceptAdminRole(RebaseToken: [0xCeF98e10D1e80378A9A74Ce074132B66CDD5e88d])
+    │   ├─ emit AdministratorTransferred(token: RebaseToken: [0xCeF98e10D1e80378A9A74Ce074132B66CDD5e88d], newAdmin: owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Stop]
+    ├─ [26273] 0x8126bE56454B628a88C17849B9ED99dd5a11Bd2f::setPool(RebaseToken: [0xCeF98e10D1e80378A9A74Ce074132B66CDD5e88d], RebaseTokenPool: [0x72cC13426cAfD2375FFABE56498437927805d3d2])
+    │   ├─ [1002] RebaseTokenPool::isSupportedToken(RebaseToken: [0xCeF98e10D1e80378A9A74Ce074132B66CDD5e88d]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit PoolSet(token: RebaseToken: [0xCeF98e10D1e80378A9A74Ce074132B66CDD5e88d], previousPool: 0x0000000000000000000000000000000000000000, newPool: RebaseTokenPool: [0x72cC13426cAfD2375FFABE56498437927805d3d2])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::selectFork(0)
+    │   └─ ← [Return]
+    ├─ [0] VM::prank(owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Return]
+    ├─ [298776] RebaseTokenPool::applyChainUpdates([], [ChainUpdate({ remoteChainSelector: 3478487238524512106 [3.478e18], remotePoolAddresses: [0x00000000000000000000000072cc13426cafd2375ffabe56498437927805d3d2], remoteTokenAddress: 0x000000000000000000000000cef98e10d1e80378a9a74ce074132b66cdd5e88d, outboundRateLimiterConfig: Config({ isEnabled: false, capacity: 0, rate: 0 }), inboundRateLimiterConfig: Config({ isEnabled: false, capacity: 0, rate: 0 }) })])
+    │   ├─ emit RemotePoolAdded(remoteChainSelector: 3478487238524512106 [3.478e18], remotePoolAddress: 0x00000000000000000000000072cc13426cafd2375ffabe56498437927805d3d2)
+    │   ├─ emit ChainAdded(remoteChainSelector: 3478487238524512106 [3.478e18], remoteToken: 0x000000000000000000000000cef98e10d1e80378a9a74ce074132b66cdd5e88d, outboundRateLimiterConfig: Config({ isEnabled: false, capacity: 0, rate: 0 }), inboundRateLimiterConfig: Config({ isEnabled: false, capacity: 0, rate: 0 }))
+    │   └─ ← [Return]
+    ├─ [0] VM::selectFork(1)
+    │   └─ ← [Return]
+    ├─ [0] VM::prank(owner: [0x7c8999dC9a822c1f0Df42023113EDB4FDd543266])
+    │   └─ ← [Return]
+    ├─ [298776] RebaseTokenPool::applyChainUpdates([], [ChainUpdate({ remoteChainSelector: 16015286601757825753 [1.601e19], remotePoolAddresses: [0x00000000000000000000000012146b3c4a1c52f82e886a784818a251b09dcf9e], remoteTokenAddress: 0x000000000000000000000000e8bbeb238e67db9e8affc049644fbb3b5e2a220f, outboundRateLimiterConfig: Config({ isEnabled: false, capacity: 0, rate: 0 }), inboundRateLimiterConfig: Config({ isEnabled: false, capacity: 0, rate: 0 }) })])
+    │   ├─ emit RemotePoolAdded(remoteChainSelector: 16015286601757825753 [1.601e19], remotePoolAddress: 0x00000000000000000000000012146b3c4a1c52f82e886a784818a251b09dcf9e)
+    │   ├─ emit ChainAdded(remoteChainSelector: 16015286601757825753 [1.601e19], remoteToken: 0x000000000000000000000000e8bbeb238e67db9e8affc049644fbb3b5e2a220f, outboundRateLimiterConfig: Config({ isEnabled: false, capacity: 0, rate: 0 }), inboundRateLimiterConfig: Config({ isEnabled: false, capacity: 0, rate: 0 }))
+    │   └─ ← [Return]
+    └─ ← [Return]
+
+  [21792] CrossChainTest::testBridgeAllTokens()
+    ├─ [0] VM::selectFork(0)
+    │   └─ ← [Return]
+    ├─ [0] console::log("sepolia chainSelector:", 16015286601757825753 [1.601e19]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("arbSepolia chainSelector:", 3478487238524512106 [3.478e18]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [0] console::log("sepolia router:", 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [2573] 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59::getOnRamp(3478487238524512106 [3.478e18]) [staticcall]
+    │   └─ ← [Return] 0x23a5084Fa78104F3DF11C63Ae59fcac4f6AD9DeE
+    ├─ [192] 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59::isRampOnRouter(0x23a5084Fa78104F3DF11C63Ae59fcac4f6AD9DeE) [staticcall]
+    │   └─ ← [Revert] EvmError: Revert
+    └─ ← [Revert] EvmError: Revert
+
+Backtrace:
+  at 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59.isRampOnRouter
+  at CrossChainTest.testBridgeAllTokens
+
+Suite result: FAILED. 0 passed; 1 failed; 0 skipped; finished in 1.87s (208.35ms CPU time)
+
+Ran 1 test suite in 1.89s (1.87s CPU time): 0 tests passed, 1 failed, 0 skipped (1 total tests)
+
+Failing tests:
+Encountered 1 failing test in test/CrossChain.t.sol:CrossChainTest
+[FAIL: EvmError: Revert] testBridgeAllTokens() (gas: 21792)
+
+Encountered a total of 1 failing tests, 0 tests succeeded
+
+Tip: Run `forge test --rerun` to retry only the 1 failed test
