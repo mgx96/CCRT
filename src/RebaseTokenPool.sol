@@ -12,42 +12,13 @@ contract RebaseTokenPool is TokenPool {
         TokenPool(_token, 18, _allowList, _rmnProxy, _router)
     {}
 
-    function lockOrBurn(Pool.LockOrBurnInV1 calldata lockOrBurnIn)
-        public
-        override
-        returns (Pool.LockOrBurnOutV1 memory lockOrBurnOut)
-    {
-        _validateLockOrBurn(lockOrBurnIn);
-
-        // Use originalSender (the source chain user), not the receiver
-        uint256 userInterestRate = IRebaseToken(address(i_token)).getUserInterestRate(lockOrBurnIn.originalSender);
-
-        IRebaseToken(address(i_token)).burn(address(this), lockOrBurnIn.amount);
-
-        lockOrBurnOut = Pool.LockOrBurnOutV1({
-            destTokenAddress: getRemoteToken(lockOrBurnIn.remoteChainSelector),
-            destPoolData: abi.encode(i_tokenDecimals, userInterestRate)
-        });
+    /// @notice Override to burn RebaseToken through its interface
+    function _lockOrBurn(uint256 amount) internal virtual override {
+        IRebaseToken(address(i_token)).burn(address(this), amount);
     }
 
-    function releaseOrMint(Pool.ReleaseOrMintInV1 calldata releaseOrMintIn)
-        public
-        override
-        returns (Pool.ReleaseOrMintOutV1 memory)
-    {
-        uint256 localAmount = _calculateLocalAmount(
-            releaseOrMintIn.sourceDenominatedAmount, _parseRemoteDecimals(releaseOrMintIn.sourcePoolData)
-        );
-        _validateReleaseOrMint(releaseOrMintIn, localAmount);
-
-        // Try to decode userInterestRate if sourcePoolData has the data, otherwise use 0
-        uint256 userInterestRate = 0;
-        if (releaseOrMintIn.sourcePoolData.length == 64) {
-            // Assume format is (uint8 decimals, uint256 userInterestRate) = 32 + 32 bytes
-            (, userInterestRate) = abi.decode(releaseOrMintIn.sourcePoolData, (uint8, uint256));
-        }
-
-        IRebaseToken(address(i_token)).mint(releaseOrMintIn.receiver, localAmount, userInterestRate);
-        return Pool.ReleaseOrMintOutV1({destinationAmount: localAmount});
+    /// @notice Override to mint RebaseToken with interest rate through its interface
+    function _releaseOrMint(address receiver, uint256 amount) internal virtual override {
+        IRebaseToken(address(i_token)).mint(receiver, amount, IRebaseToken(address(i_token)).getInterestRate());
     }
 }
