@@ -73,6 +73,11 @@ contract CrossChainTest is Test {
         TokenAdminRegistry(sepoliaNetworkDetails.tokenAdminRegistryAddress)
             .setPool(address(sepoliaToken), address(sepoliaPool));
         vm.stopPrank();
+        
+        // Make Sepolia contracts persistent
+        vm.makePersistent(address(sepoliaToken));
+        vm.makePersistent(address(sepoliaPool));
+        vm.makePersistent(address(vault));
 
         // Deploy and configure on Arbitrum Sepolia
         vm.selectFork(arbSepoliaFork);
@@ -92,6 +97,10 @@ contract CrossChainTest is Test {
         TokenAdminRegistry(arbSepoliaNetworkDetails.tokenAdminRegistryAddress)
             .setPool(address(arbSepoliaToken), address(arbSepoliaPool));
         vm.stopPrank();
+        
+        // Make Arbitrum contracts persistent
+        vm.makePersistent(address(arbSepoliaToken));
+        vm.makePersistent(address(arbSepoliaPool));
         configureTokenPool(
             sepoliaFork,
             address(sepoliaPool),
@@ -150,7 +159,7 @@ contract CrossChainTest is Test {
             data: "",
             tokenAmounts: _tokenAmounts,
             feeToken: localNetworkDetails.linkAddress,
-            extraArgs: Client._argsToBytes(Client.EVMExtraArgsV1({gasLimit: 100_000}))
+            extraArgs: Client._argsToBytes(Client.EVMExtraArgsV1({gasLimit: 500_000}))
         });
         uint256 fee =
             IRouterClient(localNetworkDetails.routerAddress).getFee(remoteNetworkDetails.chainSelector, message);
@@ -172,8 +181,24 @@ contract CrossChainTest is Test {
 
         vm.selectFork(localFork);
         vm.warp(block.timestamp + 15 minutes);
+        // Best-effort re-configure (no-op if already configured)
+        address remotePoolToConfigure = remoteFork == sepoliaFork ? address(sepoliaPool) : address(arbSepoliaPool);
+        address localPoolForConfig    = localFork  == sepoliaFork ? address(sepoliaPool) : address(arbSepoliaPool);
+        bytes[] memory _remotePoolAddrs = new bytes[](1);
+        _remotePoolAddrs[0] = abi.encode(localPoolForConfig);
+        TokenPool.ChainUpdate[] memory chainsToAdd = new TokenPool.ChainUpdate[](1);
+        chainsToAdd[0] = TokenPool.ChainUpdate({
+            remoteChainSelector: localNetworkDetails.chainSelector,
+            remotePoolAddresses: _remotePoolAddrs,
+            remoteTokenAddress: abi.encode(address(localToken)),
+            outboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0}),
+            inboundRateLimiterConfig: RateLimiter.Config({isEnabled: false, capacity: 0, rate: 0})
+        });
+        vm.selectFork(remoteFork);
+        vm.prank(owner);
+        try TokenPool(remotePoolToConfigure).applyChainUpdates(new uint64[](0), chainsToAdd) {} catch {}
+        vm.selectFork(localFork);
         ccipLocalSimulatorFork.switchChainAndRouteMessage(remoteFork);
-
         uint256 remoteBalanceAfter = remoteToken.balanceOf(user);
         assertEq(remoteBalanceAfter, remoteBalanceBefore + amountToBridge);
         uint256 remoteUserInterestRate = remoteToken.getUserInterestRate(user);
@@ -203,6 +228,17 @@ contract CrossChainTest is Test {
             arbSepoliaNetworkDetails,
             sepoliaToken,
             arbSepoliaToken
+        );
+        vm.selectFork(arbSepoliaFork);
+        vm.warp(block.timestamp + 20 minutes);
+        bridgeTokens(
+            arbSepoliaToken.balanceOf(user),
+            arbSepoliaFork,
+            sepoliaFork,
+            arbSepoliaNetworkDetails,
+            sepoliaNetworkDetails,
+            arbSepoliaToken,
+            sepoliaToken
         );
     }
 }
