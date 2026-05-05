@@ -73,7 +73,7 @@ contract CrossChainTest is Test {
         TokenAdminRegistry(sepoliaNetworkDetails.tokenAdminRegistryAddress)
             .setPool(address(sepoliaToken), address(sepoliaPool));
         vm.stopPrank();
-        
+
         // Make Sepolia contracts persistent
         vm.makePersistent(address(sepoliaToken));
         vm.makePersistent(address(sepoliaPool));
@@ -97,7 +97,7 @@ contract CrossChainTest is Test {
         TokenAdminRegistry(arbSepoliaNetworkDetails.tokenAdminRegistryAddress)
             .setPool(address(arbSepoliaToken), address(arbSepoliaPool));
         vm.stopPrank();
-        
+
         // Make Arbitrum contracts persistent
         vm.makePersistent(address(arbSepoliaToken));
         vm.makePersistent(address(arbSepoliaPool));
@@ -191,7 +191,9 @@ contract CrossChainTest is Test {
         });
         vm.selectFork(remoteFork);
         vm.prank(owner);
-        try TokenPool(remoteFork == sepoliaFork ? address(sepoliaPool) : address(arbSepoliaPool)).applyChainUpdates(new uint64[](0), chainsToAdd) {} catch {}
+        try TokenPool(remoteFork == sepoliaFork ? address(sepoliaPool) : address(arbSepoliaPool))
+            .applyChainUpdates(new uint64[](0), chainsToAdd) {}
+            catch {}
         vm.selectFork(localFork);
         ccipLocalSimulatorFork.switchChainAndRouteMessage(remoteFork);
         assertEq(remoteToken.balanceOf(user), remoteBalanceBefore + amountToBridge);
