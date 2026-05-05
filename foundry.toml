@@ -11,6 +11,8 @@ remappings = [
     '@chainlink/local/=lib/chainlink-local/',
 ]
 evm_version = "cancun"
+optimizer = true
+via_ir = true
 [profile.ci]
 # inherits from default; add CI-specific tweaks here if needed
 

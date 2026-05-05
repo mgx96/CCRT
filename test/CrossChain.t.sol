@@ -9,7 +9,7 @@ import {RebaseTokenPool} from "../src/RebaseTokenPool.sol";
 import {Vault} from "../src/Vault.sol";
 import {IRebaseToken} from "../src/interfaces/IRebaseToken.sol";
 import {CCIPLocalSimulatorFork, Register} from "../lib/chainlink-local/src/ccip/CCIPLocalSimulatorFork.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20} from "@openzeppelin/contracts@4.8.3/token/ERC20/IERC20.sol";
 import {TokenPool} from "../lib/chainlink-local/lib/chainlink-ccip/chains/evm/contracts/pools/TokenPool.sol";
 import {RateLimiter} from "../lib/chainlink-local/lib/chainlink-ccip/chains/evm/contracts/libraries/RateLimiter.sol";
 import {
@@ -150,8 +150,6 @@ contract CrossChainTest is Test {
         RebaseToken remoteToken
     ) public {
         vm.selectFork(localFork);
-        address onRamp = IRouterCheck(localNetworkDetails.routerAddress).getOnRamp(remoteNetworkDetails.chainSelector);
-        console.log("onRamp:", onRamp);
         Client.EVMTokenAmount[] memory _tokenAmounts = new Client.EVMTokenAmount[](1);
         _tokenAmounts[0] = Client.EVMTokenAmount({token: address(localToken), amount: amountToBridge});
         Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
@@ -172,8 +170,7 @@ contract CrossChainTest is Test {
         uint256 localBalanceBefore = localToken.balanceOf(user);
         vm.prank(user);
         IRouterClient(localNetworkDetails.routerAddress).ccipSend(remoteNetworkDetails.chainSelector, message);
-        uint256 localBalanceAfter = localToken.balanceOf(user);
-        assertEq(localBalanceAfter, localBalanceBefore - amountToBridge);
+        assertEq(localToken.balanceOf(user), localBalanceBefore - amountToBridge);
         uint256 localUserInterestRate = localToken.getUserInterestRate(user);
 
         vm.selectFork(remoteFork);
@@ -182,10 +179,8 @@ contract CrossChainTest is Test {
         vm.selectFork(localFork);
         vm.warp(block.timestamp + 15 minutes);
         // Best-effort re-configure (no-op if already configured)
-        address remotePoolToConfigure = remoteFork == sepoliaFork ? address(sepoliaPool) : address(arbSepoliaPool);
-        address localPoolForConfig    = localFork  == sepoliaFork ? address(sepoliaPool) : address(arbSepoliaPool);
         bytes[] memory _remotePoolAddrs = new bytes[](1);
-        _remotePoolAddrs[0] = abi.encode(localPoolForConfig);
+        _remotePoolAddrs[0] = abi.encode(localFork == sepoliaFork ? address(sepoliaPool) : address(arbSepoliaPool));
         TokenPool.ChainUpdate[] memory chainsToAdd = new TokenPool.ChainUpdate[](1);
         chainsToAdd[0] = TokenPool.ChainUpdate({
             remoteChainSelector: localNetworkDetails.chainSelector,
@@ -196,13 +191,11 @@ contract CrossChainTest is Test {
         });
         vm.selectFork(remoteFork);
         vm.prank(owner);
-        try TokenPool(remotePoolToConfigure).applyChainUpdates(new uint64[](0), chainsToAdd) {} catch {}
+        try TokenPool(remoteFork == sepoliaFork ? address(sepoliaPool) : address(arbSepoliaPool)).applyChainUpdates(new uint64[](0), chainsToAdd) {} catch {}
         vm.selectFork(localFork);
         ccipLocalSimulatorFork.switchChainAndRouteMessage(remoteFork);
-        uint256 remoteBalanceAfter = remoteToken.balanceOf(user);
-        assertEq(remoteBalanceAfter, remoteBalanceBefore + amountToBridge);
-        uint256 remoteUserInterestRate = remoteToken.getUserInterestRate(user);
-        assertEq(localUserInterestRate, remoteUserInterestRate);
+        assertEq(remoteToken.balanceOf(user), remoteBalanceBefore + amountToBridge);
+        assertEq(localUserInterestRate, remoteToken.getUserInterestRate(user));
     }
 
     function testBridgeAllTokens() public {
