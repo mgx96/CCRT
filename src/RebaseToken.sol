@@ -34,7 +34,7 @@ import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 * @author Malek Sharabi
 * @notice This is going to be a cross-chain rebase token that incentivizes users to deposit into a vault.
 * @notice The interest rate in the smart contract can only decrease.
-* @notice Each users will have their own interest rates that is the global interest rate at the time of depositing.
+* @notice Each user will have their own interest rates that is the global interest rate at the time of depositing.
 */
 
 contract RebaseToken is ERC20, Ownable, AccessControl {
