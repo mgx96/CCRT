@@ -2,7 +2,7 @@
 
 ## Overview
 
-A protocol that allows users to deposit funds into a vault and in return, receive rebase tokens that represent their underlying balance. The protocol is designed to incentivize early adoption through a decreasing global interest rate system and supports cross-chain functionality via Chainlink CCIP.
+A protocol that allow users to deposit funds into a vault and in return, receive rebase tokens that represent their underlying balance. The protocol is designed to incentivize early adoption through a decreasing global interest rate system and supports cross-chain functionality via Chainlink CCIP.
 
 ## Core Concepts
 
