@@ -23,7 +23,7 @@ A protocol that allow users to deposit funds into a vault and in return, receive
 3. **Cross-Chain Functionality**
    - Tokens can be bridged across chains using Chainlink CCIP.
    - When tokens are burned on the source chain, they are minted on the destination chain at the destination chain's current global interest rate.
-   - The pool handles its own mint/burn permissions — no manual interest rate encoding needed.
+   - The pool handles its own mint/burn permissions, no manual interest rate encoding needed.
 
 ## Smart Contracts
 
